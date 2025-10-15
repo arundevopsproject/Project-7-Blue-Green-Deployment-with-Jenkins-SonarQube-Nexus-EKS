@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Overview — Engee</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Engee subtle style -->
+    <style>
+        :root{
+          --bg:#f7f8fb;
+          --card:#ffffff;
+          --ink:#263238;
+          --muted:#667085;
+          --brand:#5465ff;
+          --brand-600:#3f51f5;
+          --accent:#2ec4b6;
+          --border:#e6e8ee;
+          --radius:16px;
+          --shadow:0 8px 24px rgba(18, 38, 63, 0.06);
+          --shadow-sm:0 4px 14px rgba(18, 38, 63, 0.05);
+        }
+        body{
+          font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+          background: var(--bg);
+          color: var(--ink);
+          margin:0;
+          min-height:100vh;
+          padding-top:64px; /* room for navbar */
+        }
+        .navbar-custom{
+          background: #ffffff;
+          border-bottom:1px solid var(--border);
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link{
+          color:#0f172a !important;
+          font-weight:600;
+        }
+        .navbar-custom .nav-link{opacity:.8}
+        .navbar-custom .nav-link:hover{opacity:1}
+        .dashboard-container{
+          max-width: 1000px;
+          margin: 32px auto 48px;
+        }
+        .hero{
+          background: linear-gradient(180deg, #ffffff, #fafbff);
+          border:1px solid var(--border);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow);
+          padding: 28px;
+          text-align:center;
+          margin-bottom: 20px;
+        }
+        h2{font-size: clamp(24px, 3vw, 32px); margin:0}
+        h3{font-size: clamp(18px, 2.2vw, 22px); color: var(--muted); margin-top: 6px}
+        .account-details{
+          background: var(--card);
+          border:1px solid var(--border);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow);
+          padding: 22px;
+          margin-bottom: 22px;
+        }
+        .section-card{
+          background: var(--card);
+          border:1px solid var(--border);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow);
+          padding:16px;
+          margin-bottom:18px;
+        }
+        .btn-primary{
+          background: var(--brand);
+          border:1px solid var(--brand);
+          border-radius:12px;
+          font-weight:600;
+          box-shadow: var(--shadow-sm);
+          transition:.2s ease;
+        }
+        .btn-primary:hover{background: var(--brand-600); transform: translateY(-1px)}
+        .btn-success{
+          background: var(--accent);
+          border:1px solid var(--accent);
+          border-radius:12px;
+          font-weight:700;
+        }
+        .btn-success:hover{filter:brightness(.95)}
+        .form-container{
+          background:#f9fbff;
+          border:1px solid var(--border);
+          border-radius:12px;
+          padding:14px;
+        }
+        label{font-weight:600; color:#374151}
+        .form-control{
+          border-radius:12px;
+          border:1px solid var(--border);
+          background:#fcfdff;
+        }
+        .form-control:focus{
+          border-color: var(--brand);
+          box-shadow: 0 0 0 3px rgba(84,101,255,.12);
+        }
+        .error{color:#b42318; font-weight:600; text-align:center}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <a class="navbar-brand" href="#">Engee</a>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="/dashboard">Overview</a></li>
+        <li class="nav-item"><a class="nav-link" href="/transactions">Activity</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="container dashboard-container">
+    <div class="hero">
+        <h2 th:text="'Welcome, ' + ${account.username}"></h2>
+        <h3 th:text="'Current balance: $' + ${account.balance}"></h3>
+    </div>
+
+    <!-- Account Details -->
+    <div class="account-details">
+        <h4 class="mb-3">Account details</h4>
+        <p><strong>Account Number:</strong> <span th:text="${account.id}"></span></p>
+        <p><strong>Account type:</strong> Savings</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Deposit -->
+        <div class="col-md-3">
+            <div class="section-card">
+                <button class="btn btn-block btn-primary" type="button" data-toggle="collapse" data-target="#depositForm" aria-expanded="false" aria-controls="depositForm">
+                    Deposit
+                </button>
+                <div class="collapse mt-3" id="depositForm">
+                    <form method="post" action="/deposit" class="form-container">
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input type="number" class="form-control" name="amount" required />
+                        </div>
+                        <button type="submit" class="btn btn-block btn-success">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdraw -->
+        <div class="col-md-3">
+            <div class="section-card">
+                <button class="btn btn-block btn-primary" type="button" data-toggle="collapse" data-target="#withdrawForm" aria-expanded="false" aria-controls="withdrawForm">
+                    Withdraw
+                </button>
+                <div class="collapse mt-3" id="withdrawForm">
+                    <form method="post" action="/withdraw" class="form-container">
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input type="number" class="form-control" name="amount" required />
+                        </div>
+                        <button type="submit" class="btn btn-block btn-success">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transfer -->
+        <div class="col-md-3">
+            <div class="section-card">
+                <button class="btn btn-block btn-primary" type="button" data-toggle="collapse" data-target="#transferForm" aria-expanded="false" aria-controls="transferForm">
+                    Transfer
+                </button>
+                <div class="collapse mt-3" id="transferForm">
+                    <form method="post" action="/transfer" class="form-container">
+                        <div class="form-group">
+                            <label>Recipient username:</label>
+                            <input type="text" class="form-control" name="toUsername" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input type="number" class="form-control" name="amount" required />
+                        </div>
+                        <button type="submit" class="btn btn-block btn-success">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p th:if="${error != null}" th:text="${error}" class="error mt-3"></p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
